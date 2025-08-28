@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শিক্ষক বেতন ব্যবস্থাপনা</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Nirmala UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #f5f5f5;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .app-content {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        /* লগইন সেকশন */
+        .login-section {
+            flex: 1;
+            padding: 30px;
+            background: var(--light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .change-password-btn {
+            background: var(--warning);
+            margin-top: 10px;
+        }
+        
+        /* ড্যাশবোর্ড */
+        .dashboard {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .dashboard-header {
+            background: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            width: auto;
+            padding: 10px 15px;
+        }
+        
+        .dashboard-content {
+            display: flex;
+            flex: 1;
+        }
+        
+        /* সাইডবার */
+        .sidebar {
+            width: 250px;
+            background: var(--primary);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sidebar-menu li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu li.active {
+            background: var(--secondary);
+            border-left: 4px solid white;
+        }
+        
+        /* মূল কন্টেন্ট */
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            background: var(--light);
+            overflow-y: auto;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        /* টেবিল স্টাইল */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* ফর্ম স্টাইল */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        /* ব্যালেন্স স্টাইল */
+        .balance-positive {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .balance-negative {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        /* মাসের স্ট্যাটাস */
+        .month-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-paid {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .status-pending {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .status-advance {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        /* রেস্পন্সিভ স্টাইল */
+        @media (max-width: 992px) {
+            .app-content {
+                flex-direction: column;
+            }
+            
+            .dashboard-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .logout-btn {
+                width: 100%;
+            }
+        }
+        
+        /* নোটিফিকেশন */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            background: var(--success);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s;
+        }
+        
+        .notification.error {
+            background: var(--danger);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* মডাল স্টাইল */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        /* শিক্ষক এডিট ফর্ম */
+        .teacher-edit-form {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .payment-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .payment-details h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .monthly-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .month-status-item {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>শিক্ষক বেতন ব্যবস্থাপনা 시스템</h1>
+            <p>শিক্ষকদের বেতন, জমা ও অগ্রিমের হিসাব সংরক্ষণ</p>
+        </header>
+        
+        <div class="app-content">
+            <!-- লগইন সেকশন -->
+            <div class="login-section" id="loginSection">
+                <form class="login-form" id="loginForm">
+                    <h2>লগইন করুন</h2>
+                    
+                    <div class="form-group">
+                        <label for="phone">ফোন নম্বর</label>
+                        <input type="tel" id="phone" placeholder="আপনার ফোন নম্বর লিখুন" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">পাসওয়ার্ড</label>
+                        <div class="password-container">
+                            <input type="password" id="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+                            <span class="toggle-password" id="togglePassword">
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit">লগইন</button>
+                    <button type="button" class="change-password-btn" id="changePasswordBtn">পাসওয়ার্ড পরিবর্তন</button>
+                </form>
+            </div>
+            
+            <!-- এডমিন ড্যাশবোর্ড -->
+            <div class="dashboard" id="adminDashboard">
+                <div class="dashboard-header">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div>
+                            <div>এডমিন</div>
+                            <div id="adminPhone">+8801XXXXXXXXX</div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" id="adminLogoutBtn">লগআউট</button>
+                </div>
+                
+                <div class="dashboard-content">
+                    <div class="sidebar">
+                        <ul class="sidebar-menu">
+                            <li class="active" data-tab="teachers"><i class="fas fa-users"></i> শিক্ষকদের তালিকা</li>
+                            <li data-tab="payments"><i class="fas fa-money-bill-wave"></i> বেতন পরিশোধ</li>
+                            <li data-tab="reports"><i class="fas fa-chart-bar"></i> রিপোর্ট</li>
+                            <li data-tab="settings"><i class="fas fa-cog"></i> সেটিংস</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="main-content">
+                        <!-- শিক্ষক তালিকা ট্যাব -->
+                        <div class="tab-content active" id="teachersTab">
+                            <div class="card">
+                                <h3>শিক্ষকদের তালিকা</h3>
+                                <table id="teachersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>নাম</th>
+                                            <th>ফোন নম্বর</th>
+                                            <th>মাসিক বেতন</th>
+                                            <th>বর্তমান অবস্থা</th>
+                                            <th>কর্ম</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teachersList">
+                                        <!-- JavaScript দিয়ে যোগ করা হবে -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- বেতন পরিশোধ ট্যাব -->
+                        <div class="tab-content" id="paymentsTab">
+                            <div class="card">
+                                <h3>বেতন পরিশোধ</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="teacherSelect">শিক্ষক নির্বাচন করুন</label>
+                                        <select id="teacherSelect" class="form-control">
+                                            <!-- JavaScript দিয়ে যোগ করা হবে -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="paymentAmount">পরিশোধের পরিমাণ</label>
+                                        <input type="number" id="paymentAmount" class="form-control" placeholder="টাকার পরিমাণ লিখুন">
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-details">
+                                    <h4>শিক্ষকের বেতন বিবরণ</h4>
+                                    <div id="teacherPaymentDetails">
+                                        <!-- শিক্ষকের বেতন বিবরণ এখানে দেখানো হবে -->
+                                    </div>
+                                </div>
+                                
+                                <button id="recordPaymentBtn">পরিশোধ রেকর্ড করুন</button>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>শিক্ষকের বেতন ইতিহাস</h3>
+                                <table id="paymentHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>তারিখ</th>
+                                            <th>বিবরণ</th>
+                                            <th>পরিমাণ</th>
+                                            <th>ধরন</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paymentHistory">
+                                        <!-- JavaScript দিয়ে যোগ করা হবে -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- রিপোর্ট ট্যাব -->
+                        <div class="tab-content" id="reportsTab">
+                            <div class="card">
+                                <h3>মাসিক রিপোর্ট</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="reportMonth">মাস নির্বাচন করুন</label>
+                                        <select id="reportMonth" class="form-control">
+                                            <option value="0">জানুয়ারী</option>
+                                            <option value="1">ফেব্রুয়ারী</option>
+                                            <option value="2">মার্চ</option>
+                                            <option value="3">এপ্রিল</option>
+                                            <option value="4">মে</option>
+                                            <option value="5">জুন</option>
+                                            <option value="6">জুলাই</option>
+                                            <option value="7">আগস্ট</option>
+                                            <option value="8">সেপ্টেম্বর</option>
+                                            <option value="9">অক্টোবর</option>
+                                            <option value="10">নভেম্বর</option>
+                                            <option value="11">ডিসেম্বর</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reportYear">বছর</label>
+                                        <input type="number" id="reportYear" min="2023" max="2100" value="2023" class="form-control">
+                                    </div>
+                                </div>
+                                <button id="generateReportBtn">রিপোর্ট তৈরি করুন</button>
+                            </div>
+                            
+                            <div class="card">
+                                <div id="reportResults">
+                                    <!-- রিপোর্ট ফলাফল এখানে দেখানো হবে -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- সেটিংস ট্যাব -->
+                        <div class="tab-content" id="settingsTab">
+                            <div class="card">
+                                <h3>পাসওয়ার্ড পরিবর্তন</h3>
+                                <div class="form-group">
+                                    <label for="changePasswordPhone">ফোন নম্বর</label>
+                                    <input type="tel" id="changePasswordPhone" placeholder="আপনার ফোন নম্বর লিখুন" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="currentPassword">বর্তমান পাসওয়ার্ড</label>
+                                    <div class="password-container">
+                                        <input type="password" id="currentPassword" placeholder="বর্তমান পাসওয়ার্ড লিখুন">
+                                        <span class="toggle-password" id="toggleCurrentPassword">
+                                            <i class="far fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="newPassword">নতুন পাসওয়ার্ড</label>
+                                    <div class="password-container">
+                                        <input type="password" id="newPassword" placeholder="নতুন পাসওয়ার্ড লিখুন">
+                                        <span class="toggle-password" id="toggleNewPassword">
+                                            <i class="far fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="confirmPassword">পাসওয়ার্ড নিশ্চিত করুন</label>
+                                    <div class="password-container">
+                                        <input type="password" id="confirmPassword" placeholder="পাসওয়ার্ড নিশ্চিত করুন">
+                                        <span class="toggle-password" id="toggleConfirmPassword">
+                                            <i class="far fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <button id="updatePasswordBtn">পাসওয়ার্ড আপডেট করুন</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- নোটিফিকেশন -->
+    <div class="notification" id="notification"></div>
+
+    <!-- পাসওয়ার্ড পরিবর্তন মডাল -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>পাসওয়ার্ড পরিবর্তন</h3>
+                <span class="close-modal" id="closeModal">&times;</span>
+            </div>
+            <div class="form-group">
+                <label for="modalPhone">ফোন নম্বর</label>
+                <input type="tel" id="modalPhone" placeholder="আপনার ফোন নম্বর লিখুন" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="modalCurrentPassword">বর্তমান পাসওয়ার্ড</label>
+                <div class="password-container">
+                    <input type="password" id="modalCurrentPassword" placeholder="বর্তমান পাসওয়ার্ড লিখুন">
+                    <span class="toggle-password" id="toggleModalCurrentPassword">
+                        <i class="far fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="modalNewPassword">নতুন পাসওয়ার্ড</label>
+                <div class="password-container">
+                    <input type="password" id="modalNewPassword" placeholder="নতুন পাসওয়ার্ড লিখুন">
+                    <span class="toggle-password" id="toggleModalNewPassword">
+                        <i class="far fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="modalConfirmPassword">পাসওয়ার্ড নিশ্চিত করুন</label>
+                <div class="password-container">
+                    <input type="password" id="modalConfirmPassword" placeholder="পাসওয়ার্ড নিশ্চিত করুন">
+                    <span class="toggle-password" id="toggleModalConfirmPassword">
+                        <i class="far fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <button id="modalUpdatePasswordBtn">পাসওয়ার্ড আপডেট করুন</button>
+        </div>
+    </div>
+
+    <script>
+        // ডেমো ডেটা - শিক্ষক এবং তাদের বেতনের তথ্য
+        const teachers = [
+            { id: 1, name: "রহিমা আক্তার", phone: "01712345671", salary: 25000, username: "teacher1", password: "pass1" },
+            { id: 2, name: "কামাল হোসেন", phone: "01712345672", salary: 30000, username: "teacher2", password: "pass2" },
+            { id: 3, name: "সালমা খাতুন", phone: "01712345673", salary: 22000, username: "teacher3", password: "pass3" },
+            { id: 4, name: "জaved ইকবাল", phone: "01712345674", salary: 28000, username: "teacher4", password: "pass4" },
+            { id: 5, name: "নাসরিন সultana", phone: "01712345675", salary: 26000, username: "teacher5", password: "pass5" },
+            { id: 6, name: "আব্দুল্লাহ আল মামুন", phone: "01712345676", salary: 32000, username: "teacher6", password: "pass6" },
+            { id: 7, name: "ফারহানা ইয়াসমিন", phone: "01712345677", salary: 24000, username: "teacher7", password: "pass7" },
+            { id: 8, name: "রিদwanul ইসলাম", phone: "01712345678", salary: 27000, username: "teacher8", password: "pass8" },
+            { id: 9, name: "তানিয়া আহমেদ", phone: "01712345679", salary: 29000, username: "teacher9", password: "pass9" },
+            { id: 10, name: "সজিব সরকার", phone: "01712345670", salary: 31000, username: "teacher10", password: "pass10" }
+        ];
+
+        // এডমিন তথ্য
+        const admin = {
+            phone: "01810000000",
+            password: "admin123"
+        };
+
+        // মাসের নাম
+        const monthNames = ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", 
+                          "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+
+        // ডেমো পেমেন্ট ডেটা
+        let payments = [
+            { id: 1, teacherId: 1, month: 0, year: 2023, amount: 20000, date: "2023-01-05", type: "বেতন", description: "জানুয়ারী ২০২৩ বেতন" },
+            { id: 2, teacherId: 1, month: 2, year: 2023, amount: 25000, date: "2023-03-10", type: "বেতন", description: "মার্চ ২০২৩ বেতন" },
+            { id: 3, teacherId: 2, month: 0, year: 2023, amount: 30000, date: "2023-01-05", type: "বেতন", description: "জানুয়ারী ২০২৩ বেতন" },
+            { id: 4, teacherId: 2, month: 1, year: 2023, amount: 30000, date: "2023-02-07", type: "বেতন", description: "ফেব্রুয়ারী ২০২৩ বেতন" },
+            { id: 5, teacherId: 3, month: 0, year: 2023, amount: 22000, date: "2023-01-05", type: "বেতন", description: "জানুয়ারী ২০২৩ বেতন" },
+            { id: 6, teacherId: 1, month: 1, year: 2023, amount: 10000, date: "2023-02-15", type: "অগ্রিম", description: "ফেব্রুয়ারী ২০২৩ অগ্রিম" }
+        ];
+
+        // বর্তমান ইউজার ট্র্যাক করতে
+        let currentUser = null;
+        let nextPaymentId = 7;
+
+        // DOM লোড হওয়ার পর কাজগুলো করা
+        document.addEventListener('DOMContentLoaded', function() {
+            // লগইন বাটন
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+            
+            // লগআউট বাটন
+            document.getElementById('adminLogoutBtn').addEventListener('click', logout);
+            
+            // পাসওয়ার্ড পরিবর্তন বাটন
+            document.getElementById('changePasswordBtn').addEventListener('click', openChangePasswordModal);
+            document.getElementById('modalUpdatePasswordBtn').addEventListener('click', changePassword);
+            document.getElementById('closeModal').addEventListener('click', closeChangePasswordModal);
+            document.getElementById('updatePasswordBtn').addEventListener('click', updateAdminPassword);
+            
+            // পাসওয়ার্ড দেখার বাটন
+            setupPasswordToggle('togglePassword', 'password');
+            setupPasswordToggle('toggleCurrentPassword', 'currentPassword');
+            setupPasswordToggle('toggleNewPassword', 'newPassword');
+            setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
+            setupPasswordToggle('toggleModalCurrentPassword', 'modalCurrentPassword');
+            setupPasswordToggle('toggleModalNewPassword', 'modalNewPassword');
+            setupPasswordToggle('toggleModalConfirmPassword', 'modalConfirmPassword');
+            
+            // ট্যাব ফাংশনালিটি
+            const tabs = document.querySelectorAll('.sidebar-menu li');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // সক্রিয় ট্যাব আপডেট করুন
+                    document.querySelectorAll('.sidebar-menu li').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+                    
+                    // পেমেন্ট ট্যাব হলে শিক্ষক তালিকা আপডেট করুন
+                    if (tab.dataset.tab === 'payments') {
+                        updateTeacherDropdown();
+                    }
+                });
+            });
+            
+            // শিক্ষক নির্বাচন করার সময় পেমেন্ট ইতিহাস আপডেট করুন
+            document.getElementById('teacherSelect').addEventListener('change', function() {
+                updatePaymentHistory();
+                updateTeacherPaymentDetails();
+            });
+            
+            // পেমেন্ট রেকর্ড বাটন
+            document.getElementById('recordPaymentBtn').addEventListener('click', recordPayment);
+            
+            // রিপোর্ট জেনারেট বাটন
+            document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+            
+            // লোকাল স্টোরেজ থেকে ডেটা লোড করুন
+            loadFromLocalStorage();
+            
+            // শিক্ষক তালিকা আপডেট করুন
+            if (currentUser) {
+                updateTeachersList();
+            }
+        });
+
+        // পাসওয়ার্ড টগল সেটআপ
+        function setupPasswordToggle(toggleId, inputId) {
+            const toggle = document.getElementById(toggleId);
+            const input = document.getElementById(inputId);
+            
+            if (toggle && input) {
+                toggle.addEventListener('click', function() {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        toggle.innerHTML = '<i class="far fa-eye-slash"></i>';
+                    } else {
+                        input.type = 'password';
+                        toggle.innerHTML = '<i class="far fa-eye"></i>';
+                    }
+                });
+            }
+        }
+
+        // লগইন ফাংশন
+        function login() {
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            
+            if (!phone || !password) {
+                showNotification('ফোন নম্বর এবং পাসওয়ার্ড প্রয়োজন', 'error');
+                return;
+            }
+            
+            // এডমিন লগইন চেক
+            if (phone === admin.phone && password === admin.password) {
+                currentUser = { role: 'admin', phone: admin.phone };
+                document.getElementById('adminPhone').textContent = admin.phone;
+                showAdminDashboard();
+                showNotification('সফলভাবে লগইন করা হয়েছে');
+                return;
+            }
+            
+            // শিক্ষক লগইন চেক
+            const teacher = teachers.find(t => t.phone === phone && t.password === password);
+            if (teacher) {
+                showNotification('শিক্ষক লগইন এখনও উপলব্ধ নয়', 'error');
+                return;
+            }
+            
+            showNotification('ভুল ফোন নম্বর বা পাসওয়ার্ড', 'error');
+        }
+
+        // লগআউট ফাংশন
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('adminDashboard').style.display = 'none';
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('phone').value = '';
+            document.getElementById('password').value = '';
+            
+            showNotification('সফলভাবে লগআউট করা হয়েছে');
+        }
+
+        // এডমিন ড্যাশবোর্ড দেখান
+        function showAdminDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'flex';
+            
+            // শিক্ষক তালিকা আপডেট করুন
+            updateTeachersList();
+        }
+
+        // শিক্ষক তালিকা আপডেট করুন
+        function updateTeachersList() {
+            const teachersList = document.getElementById('teachersList');
+            teachersList.innerHTML = '';
+            
+            teachers.forEach(teacher => {
+                const balanceInfo = calculateTeacherBalance(teacher.id);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${teacher.name}</td>
+                    <td>${teacher.phone}</td>
+                    <td>${teacher.salary} টাকা</td>
+                    <td>${balanceInfo.status}</td>
+                    <td>
+                        <button class="edit-salary-btn" data-teacher-id="${teacher.id}">বেতন পরিবর্তন</button>
+                    </td>
+                `;
+                
+                teachersList.appendChild(row);
+            });
+            
+            // বেতন পরিবর্তন বাটন ইভেন্ট যোগ করুন
+            document.querySelectorAll('.edit-salary-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const teacherId = parseInt(this.getAttribute('data-teacher-id'));
+                    editTeacherSalary(teacherId);
+                });
+            });
+        }
+
+        // শিক্ষকের বেতন পরিবর্তন করুন
+        function editTeacherSalary(teacherId) {
+            const teacher = teachers.find(t => t.id === teacherId);
+            if (!teacher) return;
+            
+            const newSalary = prompt(`প্রাক্তন বেতন: ${teacher.salary} টাকা\nনতুন বেতন লিখুন:`, teacher.salary);
+            
+            if (newSalary && !isNaN(newSalary) && parseInt(newSalary) > 0) {
+                teacher.salary = parseInt(newSalary);
+                updateTeachersList();
+                saveToLocalStorage();
+                showNotification('বেতন সফলভাবে আপডেট করা হয়েছে');
+            }
+        }
+
+        // শিক্ষক ড্রপডাউন আপডেট করুন
+        function updateTeacherDropdown() {
+            const teacherSelect = document.getElementById('teacherSelect');
+            teacherSelect.innerHTML = '';
+            
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.id;
+                option.textContent = teacher.name + ' (' + teacher.phone + ')';
+                teacherSelect.appendChild(option);
+            });
+            
+            // পেমেন্ট ইতিহাস আপডেট করুন
+            updatePaymentHistory();
+            updateTeacherPaymentDetails();
+        }
+
+        // শিক্ষকের বেতন বিবরণ আপডেট করুন
+        function updateTeacherPaymentDetails() {
+            const teacherId = parseInt(document.getElementById('teacherSelect').value);
+            if (!teacherId) return;
+            
+            const teacher = teachers.find(t => t.id === teacherId);
+            if (!teacher) return;
+            
+            const balanceInfo = calculateTeacherBalance(teacherId);
+            const detailsDiv = document.getElementById('teacherPaymentDetails');
+            
+            let html = `
+                <p><strong>শিক্ষক:</strong> ${teacher.name}</p>
+                <p><strong>মাসিক বেতন:</strong> ${teacher.salary} টাকা</p>
+                <p><strong>বর্তমান অবস্থা:</strong> ${balanceInfo.status}</p>
+            `;
+            
+            if (balanceInfo.pendingMonths.length > 0) {
+                html += `<p><strong>বাকি মাসগুলো:</strong> ${balanceInfo.pendingMonths.join(', ')}</p>`;
+            }
+            
+            if (balanceInfo.advance > 0) {
+                html += `<p><strong>অগ্রিম নেওয়া হয়েছে:</strong> ${balanceInfo.advance} টাকা</p>`;
+            }
+            
+            detailsDiv.innerHTML = html;
+        }
+
+        // শিক্ষকের ব্যালেন্স গণনা করুন
+        function calculateTeacherBalance(teacherId) {
+            const teacher = teachers.find(t => t.id === teacherId);
+            if (!teacher) return { status: "তথ্য নেই", pendingMonths: [], advance: 0 };
+            
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth();
+            
+            // শিক্ষকের সকল পেমেন্ট
+            const teacherPayments = payments.filter(p => p.teacherId === teacherId);
+            
+            // মাসিক বেতন পরিশোধের হিসাব
+            let paidMonths = {};
+            let totalPaid = 0;
+            let totalAdvance = 0;
+            
+            teacherPayments.forEach(payment => {
+                if (payment.type === 'বেতন') {
+                    const key = `${payment.year}-${payment.month}`;
+                    paidMonths[key] = (paidMonths[key] || 0) + payment.amount;
+                    totalPaid += payment.amount;
+                } else if (payment.type === 'অগ্রিম') {
+                    totalAdvance += payment.amount;
+                }
+            });
+            
+            // বাকি থাকা মাসগুলো খুঁজে বের করুন
+            let pendingMonths = [];
+            for (let year = 2023; year <= currentYear; year++) {
+                const startMonth = year === 2023 ? 0 : 0;
+                const endMonth = year === currentYear ? currentMonth : 11;
+                
+                for (let month = startMonth; month <= endMonth; month++) {
+                    const key = `${year}-${month}`;
+                    const paidAmount = paidMonths[key] || 0;
+                    
+                    if (paidAmount < teacher.salary) {
+                        const remaining = teacher.salary - paidAmount;
+                        pendingMonths.push(`${monthNames[month]} ${year} (বাকি: ${remaining} টাকা)`);
+                    }
+                }
+            }
+            
+            // মোট প্রদত্ত বেতন
+            const totalEarned = ((currentYear - 2023) * 12 + currentMonth + 1) * teacher.salary;
+            const netBalance = totalPaid - totalEarned - totalAdvance;
+            
+            let status = "";
+            if (netBalance === 0) {
+                status = "সব বেতন পরিশোধিত";
+            } else if (netBalance > 0) {
+                status = `<span class="balance-positive">জমা: ${netBalance} টাকা</span>`;
+            } else {
+                status = `<span class="balance-negative">বাকি: ${Math.abs(netBalance)} টাকা</span>`;
+            }
+            
+            return {
+                status,
+                pendingMonths,
+                advance: totalAdvance,
+                totalPaid,
+                totalEarned,
+                netBalance
+            };
+        }
+
+        // পেমেন্ট ইতিহাস আপডেট করুন
+        function updatePaymentHistory() {
+            const teacherId = parseInt(document.getElementById('teacherSelect').value);
+            const paymentHistory = document.getElementById('paymentHistory');
+            paymentHistory.innerHTML = '';
+            
+            const teacherPayments = payments.filter(p => p.teacherId === teacherId);
+            
+            teacherPayments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.date}</td>
+                    <td>${payment.description}</td>
+                    <td>${payment.amount} টাকা</td>
+                    <td>${payment.type}</td>
+                `;
+                
+                paymentHistory.appendChild(row);
+            });
+        }
+
+        // পেমেন্ট রেকর্ড করুন
+        function recordPayment() {
+            const teacherId = parseInt(document.getElementById('teacherSelect').value);
+            const amount = parseInt(document.getElementById('paymentAmount').value);
+            
+            if (!teacherId || isNaN(amount) || amount <= 0) {
+                showNotification('দয়া করে সঠিক তথ্য প্রদান করুন', 'error');
+                return;
+            }
+            
+            const teacher = teachers.find(t => t.id === teacherId);
+            if (!teacher) {
+                showNotification('শিক্ষক খুঁজে পাওয়া যায়নি', 'error');
+                return;
+            }
+            
+            const balanceInfo = calculateTeacherBalance(teacherId);
+            const currentDate = new Date();
+            const dateString = currentDate.toISOString().split('T')[0];
+            
+            // নতুন পেমেন্ট তৈরি করুন
+            let newPayment = {
+                id: nextPaymentId++,
+                teacherId,
+                amount,
+                date: dateString,
+                type: "বেতন",
+                description: ""
+            };
+            
+            // যদি বাকি মাস থেকে থাকে, প্রথমে সেগুলো পরিশোধ করুন
+            if (balanceInfo.pendingMonths.length > 0) {
+                // প্রথম বাকি মাসের তথ্য পাওয়া যাচ্ছে
+                const firstPending = balanceInfo.pendingMonths[0];
+                const match = firstPending.match(/(\w+) (\d+) \(বাকি: (\d+) টাকা\)/);
+                
+                if (match) {
+                    const monthName = match[1];
+                    const year = parseInt(match[2]);
+                    const remainingAmount = parseInt(match[3]);
+                    const monthIndex = monthNames.indexOf(monthName);
+                    
+                    newPayment.month = monthIndex;
+                    newPayment.year = year;
+                    newPayment.description = `${monthName} ${year} বেতন`;
+                    
+                    // যদি পরিশোধের পরিমাণ বাকি টাকার চেয়ে বেশি হয়, বাকিটা পরের মাসের জন্য রাখুন
+                    if (amount > remainingAmount) {
+                        newPayment.amount = remainingAmount;
+                        newPayment.description = `${monthName} ${year} বেতন (সম্পূর্ণ)`;
+                        
+                        // বাকি টাকা পরের মাসের জন্য
+                        const extraAmount = amount - remainingAmount;
+                        recordPaymentForNextMonth(teacherId, extraAmount, monthIndex, year, dateString);
+                    } else if (amount === remainingAmount) {
+                        newPayment.description = `${monthName} ${year} বেতন (সম্পূর্ণ)`;
+                    } else {
+                        newPayment.description = `${monthName} ${year} বেতন (আংশিক)`;
+                    }
+                }
+            } else {
+                // কোন বাকি মাস নেই, নতুন মাসের জন্য অগ্রিম
+                newPayment.type = "অগ্রিম";
+                newPayment.month = currentDate.getMonth();
+                newPayment.year = currentDate.getFullYear();
+                newPayment.description = `${monthNames[newPayment.month]} ${newPayment.year} অগ্রিম`;
+            }
+            
+            // পেমেন্টস অ্যারে যোগ করুন
+            payments.push(newPayment);
+            
+            // লোকাল স্টোরেজে সংরক্ষণ করুন
+            saveToLocalStorage();
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('paymentAmount').value = '';
+            
+            // পেমেন্ট ইতিহাস আপডেট করুন
+            updatePaymentHistory();
+            updateTeacherPaymentDetails();
+            
+            showNotification('পেমেন্ট সফলভাবে রেকর্ড করা হয়েছে');
+        }
+
+        // পরের মাসের জন্য পেমেন্ট রেকর্ড করুন
+        function recordPaymentForNextMonth(teacherId, amount, currentMonth, currentYear, dateString) {
+            let nextMonth = currentMonth + 1;
+            let nextYear = currentYear;
+            
+            if (nextMonth > 11) {
+                nextMonth = 0;
+                nextYear++;
+            }
+            
+            const newPayment = {
+                id: nextPaymentId++,
+                teacherId,
+                month: nextMonth,
+                year: nextYear,
+                amount: amount,
+                date: dateString,
+                type: "বেতন",
+                description: `${monthNames[nextMonth]} ${nextYear} বেতন`
+            };
+            
+            payments.push(newPayment);
+        }
+
+        // রিপোর্ট তৈরি করুন
+        function generateReport() {
+            const month = parseInt(document.getElementById('reportMonth').value);
+            const year = parseInt(document.getElementById('reportYear').value);
+            
+            const reportResults = document.getElementById('reportResults');
+            reportResults.innerHTML = '<h3>মাসিক রিপোর্ট: ' + monthNames[month] + ' ' + year + '</h3>';
+            
+            // নির্বাচিত মাসের পেমেন্ট ফিল্টার করুন
+            const monthlyPayments = payments.filter(p => p.month === month && p.year === year);
+            
+            if (monthlyPayments.length === 0) {
+                reportResults.innerHTML += '<p>এই মাসে কোনো পেমেন্ট রেকর্ড করা হয়নি</p>';
+                return;
+            }
+            
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>শিক্ষকের নাম</th>
+                        <th>পরিমাণ</th>
+                        <th>ধরন</th>
+                        <th>তারিখ</th>
+                        <th>বিবরণ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            `;
+            
+            const tbody = table.querySelector('tbody');
+            let totalAmount = 0;
+            
+            monthlyPayments.forEach(payment => {
+                const teacher = teachers.find(t => t.id === payment.teacherId);
+                totalAmount += payment.amount;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${teacher.name}</td>
+                    <td>${payment.amount} টাকা</td>
+                    <td>${payment.type}</td>
+                    <td>${payment.date}</td>
+                    <td>${payment.description}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // মোট পরিমাণ যোগ করুন
+            const totalRow = document.createElement('tr');
+            totalRow.innerHTML = `
+                <td><strong>মোট</strong></td>
+                <td><strong>${totalAmount} টাকা</strong></td>
+                <td colspan="3"></td>
+            `;
+            tbody.appendChild(totalRow);
+            
+            reportResults.appendChild(table);
+        }
+
+        // পাসওয়ার্ড পরিবর্তন মডাল খুলুন
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'flex';
+        }
+
+        // পাসওয়ার্ড পরিবর্তন মডাল বন্ধ করুন
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+            // ফর্ম রিসেট করুন
+            document.getElementById('modalPhone').value = '';
+            document.getElementById('modalCurrentPassword').value = '';
+            document.getElementById('modalNewPassword').value = '';
+            document.getElementById('modalConfirmPassword').value = '';
+        }
+
+        // পাসওয়ার্ড পরিবর্তন করুন
+        function changePassword() {
+            const phone = document.getElementById('modalPhone').value;
+            const currentPassword = document.getElementById('modalCurrentPassword').value;
+            const newPassword = document.getElementById('modalNewPassword').value;
+            const confirmPassword = document.getElementById('modalConfirmPassword').value;
+            
+            if (!phone || !currentPassword || !newPassword || !confirmPassword) {
+                showNotification('সমস্ত ফিল্ড পূরণ করুন', 'error');
+                return;
+            }
+            
+            // এডমিন পাসওয়ার্ড পরিবর্তন
+            if (phone === admin.phone) {
+                if (currentPassword !== admin.password) {
+                    showNotification('বর্তমান পাসওয়ার্ড ভুল', 'error');
+                    return;
+                }
+            } 
+            // শিক্ষক পাসওয়ার্ড পরিবর্তন
+            else {
+                const teacher = teachers.find(t => t.phone === phone);
+                if (!teacher) {
+                    showNotification('ফোন নম্বর সঠিক নয়', 'error');
+                    return;
+                }
+                
+                if (currentPassword !== teacher.password) {
+                    showNotification('বর্তমান পাসওয়ার্ড ভুল', 'error');
+                    return;
+                }
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('নতুন পাসওয়ার্ড মেলে না', 'error');
+                return;
+            }
+            
+            // পাসওয়ার্ড আপডেট করুন
+            if (phone === admin.phone) {
+                admin.password = newPassword;
+            } else {
+                const teacher = teachers.find(t => t.phone === phone);
+                teacher.password = newPassword;
+            }
+            
+            // লোকাল স্টোরেজে সংরক্ষণ করুন
+            saveToLocalStorage();
+            
+            // মডাল বন্ধ করুন
+            closeChangePasswordModal();
+            
+            showNotification('পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে');
+        }
+
+        // এডমিন পাসওয়ার্ড আপডেট করুন
+        function updateAdminPassword() {
+            const phone = document.getElementById('changePasswordPhone').value;
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!phone || !currentPassword || !newPassword || !confirmPassword) {
+                showNotification('সমস্ত ফিল্ড পূরণ করুন', 'error');
+                return;
+            }
+            
+            if (phone !== admin.phone) {
+                showNotification('এডমিন ফোন নম্বর সঠিক নয়', 'error');
+                return;
+            }
+            
+            if (currentPassword !== admin.password) {
+                showNotification('বর্তমান পাসওয়ার্ড ভুল', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('নতুন পাসওয়ার্ড মেলে না', 'error');
+                return;
+            }
+            
+            // পাসওয়ার্ড আপডেট করুন
+            admin.password = newPassword;
+            
+            // লোকাল স্টোরেজে সংরক্ষণ করুন
+            saveToLocalStorage();
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('changePasswordPhone').value = '';
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            showNotification('পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে');
+        }
+
+        // নোটিফিকেশন দেখান
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+            }
+            
+            notification.style.display = 'block';
+            
+            // 3 সেকেন্ড পরে নোটিফিকেশন隐藏 করুন
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // লোকাল স্টোরেজে ডেটা সংরক্ষণ করুন
+        function saveToLocalStorage() {
+            localStorage.setItem('teacherPayments', JSON.stringify(payments));
+            localStorage.setItem('adminData', JSON.stringify(admin));
+            localStorage.setItem('teacherData', JSON.stringify(teachers));
+        }
+
+        // লোকাল স্টোরেজ থেকে ডেটা লোড করুন
+        function loadFromLocalStorage() {
+            const storedPayments = localStorage.getItem('teacherPayments');
+            if (storedPayments) {
+                payments = JSON.parse(storedPayments);
+                // সর্বোচ্চ ID খুঁজে বের করুন
+                nextPaymentId = Math.max(...payments.map(p => p.id), 0) + 1;
+            }
+            
+            const storedAdmin = localStorage.getItem('adminData');
+            if (storedAdmin) {
+                const adminData = JSON.parse(storedAdmin);
+                admin.password = adminData.password;
+            }
+            
+            const storedTeachers = localStorage.getItem('teacherData');
+            if (storedTeachers) {
+                const teacherData = JSON.parse(storedTeachers);
+                teacherData.forEach((t, i) => {
+                    if (teachers[i]) {
+                        teachers[i].salary = t.salary;
+                        teachers[i].password = t.password;
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
